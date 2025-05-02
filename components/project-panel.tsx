@@ -24,6 +24,10 @@ type ProjectPanelProps = {
 export function ProjectPanel({ project, position, onClose, visible }: ProjectPanelProps) {
   if (!visible) return null
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent click from propagating to canvas
+  }
+
   return (
     <Html
       position={position}
@@ -33,44 +37,57 @@ export function ProjectPanel({ project, position, onClose, visible }: ProjectPan
       occlude={[]}
       zIndexRange={[100, 0]}
       className="pointer-events-auto"
+      onClick={handleCardClick}
     >
-      <Card className="w-64 bg-amber-50/95 backdrop-blur-sm border-amber-200 shadow-lg">
-        <CardHeader className="pb-2">
-          <div className="flex justify-between items-start">
-            <CardTitle className="text-amber-900">{project.title}</CardTitle>
-            <Button variant="ghost" size="icon" onClick={onClose} className="h-6 w-6 rounded-full -mt-1 -mr-1">
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-          <CardDescription className="text-amber-700">{project.description}</CardDescription>
-        </CardHeader>
-        <CardContent className="pb-2">
+      <div className="project-panel" onClick={handleCardClick}>
+        <div className="project-header">
+          <h3 className="project-title">{project.title}</h3>
+          <button className="project-close-btn" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </button>
+          <p className="project-description">{project.description}</p>
+        </div>
+        <div className="project-content">
           {project.image && (
-            <div className="mb-3 rounded-md overflow-hidden">
-              <img src={project.image || "/placeholder.svg"} alt={project.title} className="w-full h-32 object-cover" />
+            <div className="project-image-container">
+              <img 
+                src={project.image} 
+                alt={project.title} 
+                className="project-image"
+              />
             </div>
           )}
-          <div className="flex flex-wrap gap-2">
+          <div className="project-tags">
             {project.tags.map((tag, i) => (
-              <span key={i} className="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded">
-                {tag}
-              </span>
+              <span key={i} className="project-tag">{tag}</span>
             ))}
           </div>
-        </CardContent>
-        <CardFooter className="flex justify-between pt-2">
-        <Button asChild variant="outline" size="sm">
-          <a href={project.github} target="_blank" rel="noopener noreferrer">
-            <Github className="mr-2 h-4 w-4" />
+        </div>
+        <div className="project-footer">
+          <a 
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="project-link"
+            onClick={e => e.stopPropagation()}
+          >
+            <Github className="h-4 w-4" />
             Code
           </a>
-        </Button>
-          {/* <Button variant="default" size="sm" className="bg-amber-600 hover:bg-amber-700">
-            <ExternalLink className="mr-2 h-4 w-4" />
-            View
-          </Button> */}
-        </CardFooter>
-      </Card>
+          {project.link && (
+            <a 
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="project-link"
+              onClick={e => e.stopPropagation()}
+            >
+              <ExternalLink className="h-4 w-4" />
+              Live Demo
+            </a>
+          )}
+        </div>
+      </div>
     </Html>
   )
 }

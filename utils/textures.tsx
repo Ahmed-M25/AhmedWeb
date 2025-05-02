@@ -1,8 +1,12 @@
 "use client"
 
-import * as THREE from "three"
+import { useEffect, useState } from 'react'
+import * as THREE from 'three'
 
 export function createSandTexture(color = "#e8c396", roughness = 1.0, scale = 1.0) {
+  // Return null during server-side rendering
+  if (typeof window === 'undefined') return null
+
   const canvas = document.createElement("canvas")
   canvas.width = 512
   canvas.height = 512
@@ -51,6 +55,18 @@ export function createSandTexture(color = "#e8c396", roughness = 1.0, scale = 1.
   const texture = new THREE.CanvasTexture(canvas)
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping
   texture.repeat.set(scale, scale)
+
+  return texture
+}
+
+// Create a hook to handle the texture creation
+export function useSandTexture(color = "#e8c396", roughness = 1.0, scale = 1.0) {
+  const [texture, setTexture] = useState<THREE.Texture | null>(null)
+
+  useEffect(() => {
+    const newTexture = createSandTexture(color, roughness, scale)
+    setTexture(newTexture)
+  }, [color, roughness, scale])
 
   return texture
 }
