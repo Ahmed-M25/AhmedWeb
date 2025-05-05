@@ -4,6 +4,14 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Ahmed Mohammed',
   description: '3D Pyramids Portfolio',
+  icons: {
+    icon: [
+      {
+        url: '/favicon.jpeg',
+        sizes: 'any',
+      },
+    ],
+  },
 }
 
 export default function RootLayout({
